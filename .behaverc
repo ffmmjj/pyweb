@@ -1,0 +1,6 @@
+[behave]
+format = plain
+show_skipped = 0
+
+[behave.userdata]
+behave_debug_on_error = False

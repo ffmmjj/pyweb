@@ -1,6 +1,6 @@
 Feature: Login and logout
 
-Scenario: Run a simple test
-    Given I have a published hello world endpoint
-    When I consume this endpoint
-    Then I can see response http code 200
+Scenario: Navigate to index page
+	Given I am an authenticated user
+	When I navigate to the index page
+	Then I can see the welcome user message
