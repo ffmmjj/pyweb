@@ -15,7 +15,8 @@ def step_impl(context):
 
 @when('I navigate to the index page')
 def step_impl(context):
-    context.browser.get('http://localhost:5000/index')
+	print(context.application_url + 'index')
+	context.browser.get(context.application_url + 'index')
 
 @then('I can see the welcome user message')
 def step_impl(context):

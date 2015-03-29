@@ -4,4 +4,4 @@ show_skipped = 0
 
 [behave.userdata]
 behave_debug_on_error = False
-application_url = http://localhost:5000/
+application_url = http://paiweb.herokuapp.com/
