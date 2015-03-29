@@ -1,6 +1,6 @@
 Feature: Login and logout
 
-Scenario: Navigate to index page
-	Given I am an authenticated user
+Scenario: Navigate to index page being a unauthenticated user
+	Given I am an unauthenticated user
 	When I navigate to the index page
-	Then I can see the welcome user message
+	Then I see the login page
