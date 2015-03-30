@@ -54,10 +54,20 @@
               <li><a href="#contact">Contact</a></li>
             </ul>
           </div><!--/.nav-collapse -->
+
+          {% if session.logged_in %}
+            <div class="navbar-header pull-right">
+              <p class="navbar-text">
+                <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>
+              </p>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
-    {% block content %}{% endblock %}
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
   </body>
