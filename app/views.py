@@ -19,6 +19,9 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #just to test staging environment. remove later.
+    return render_template('login.html')
+
     if get_current_user() is None:
         error = None
         users_query = g.db.execute('select id, username, password from users')
