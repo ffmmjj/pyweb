@@ -1,30 +1,22 @@
-import sqlite3
 from flask import Flask, g, request, session, url_for, flash
-
-# configuration
-DATABASE = '/tmp/pyweb.db'
-SECRET_KEY = 'development key'
+from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from models.user import User
 
 app = Flask(__name__)
-app.config.from_object(__name__)
-
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
-
-def init_db():
-    with closing(connect_db()) as db:
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-@app.before_request
-def before_request():
-    g.db = connect_db()
-
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
-    if db is not None:
-        db.close()
+app.config.from_object('config')
 
 from app import views
+
+def init_login():
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+    # Create user loader function
+    @login_manager.user_loader
+    def load_user(user_id):
+        if (user_id):
+        	return User(user_id)
+        else:
+        	return None
+
+init_login()

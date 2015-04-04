@@ -1,9 +1,17 @@
-import sqlite3
 from flask import render_template, redirect, g, request, session, url_for, flash
 from app import app
+from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from forms.login_form import LoginForm
+from models.user import User
 
 def get_current_user():
-    return session.get('logged_in')
+    if (current_user.is_authenticated()):
+        return current_user
+    else:
+        return None
+
+def set_current_user(user):
+    current_user = user
 
 @app.route('/')
 @app.route('/index')
@@ -12,37 +20,38 @@ def index():
     if user == None:
         return redirect('/login',302)
     else:
-        user = dict(nickname=session.get('user_nickname'))
         return render_template("index.html",
                                title='Home',
                                user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    #just to test staging environment. remove later.
-    return render_template('login.html')
+
+    form = LoginForm()
 
     if get_current_user() is None:
         error = None
-        users_query = g.db.execute('select id, username, password from users')
-        users = [dict(id=row[0], username=row[1], password=row[2]) for row in users_query.fetchall()]
+        
+        users = [{'username':'valid_user', 'password':'valid_password'}]
 
         if request.method == 'POST':
-            if request.form['username'] not in [user['username'] for user in users]:
+            if request.form['login'] not in [user['username'] for user in users]:
                 error = 'Invalid username or password'
-            elif request.form['password'] != [user['password'] for user in users if user['username'] == request.form['username']][0]:
+            elif request.form['password'] != [user['password'] for user in users if user['username'] == request.form['login']][0]:
                 error = 'Invalid username or password'
             else:
-                session['logged_in'] = True
-                session['user_nickname'] = request.form['username']
+                user = User(request.form['login'])
+                login_user(user)
+                set_current_user(user)
                 return redirect(url_for('index'))
 
-        return render_template('login.html', error=error)
+        
+        return render_template('login.html', error=error, form=form)
 
     return redirect(url_for('index'))
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    logout_user()
     flash('You were logged out')
     return redirect(url_for('login'))

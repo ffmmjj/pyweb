@@ -3,3 +3,5 @@ Flask==0.10.1
 Behave==1.2.5
 selenium==2.45.0
 nose==1.3.4
+flask_login=0.2.11
+Flask-WTF=0.11.0
