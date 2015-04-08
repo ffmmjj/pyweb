@@ -1,9 +1,12 @@
 from flask import Flask, g, request, session, url_for, flash
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from flask.ext.mongoengine import MongoEngine
 from models.user import User
 
 app = Flask(__name__)
 app.config.from_object('config')
+
+db = MongoEngine(app)
 
 from pyweb import views
 
