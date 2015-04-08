@@ -1,6 +1,6 @@
 from flask import render_template, redirect, g, request, session, url_for, flash
-from app import app
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from pyweb import app
 from forms.login_form import LoginForm
 from models.user import User
 

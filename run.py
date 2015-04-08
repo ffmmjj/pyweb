@@ -1,3 +1,3 @@
 #!default_env/bin/python
-from app import app
+from pyweb import app
 app.run(debug=True)

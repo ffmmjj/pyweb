@@ -5,7 +5,7 @@ from models.user import User
 app = Flask(__name__)
 app.config.from_object('config')
 
-from app import views
+from pyweb import views
 
 def init_login():
     login_manager = LoginManager()
