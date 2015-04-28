@@ -4,7 +4,7 @@ from flask.ext.mongoengine import MongoEngine
 from models.user import User
 
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_object('config.Config')
 
 db = MongoEngine(app)
 
