@@ -1,8 +1,12 @@
-import unittest, app
+import unittest, pyweb
 
 class RoutesTests(unittest.TestCase):
-    def should_response_hello_world_when_call_index(self):
-        self.assertEqual(app.index(), "Hello, World!")
+	def setUp(self):
+		self.app = pyweb.app.test_client()
+
+	def test_should_response_hello_world_when_call_index(self):
+		response = self.app.get('/hello')
+		self.assertEqual(response.data, "Hello, World!")
 
 if __name__ == '__main__':
     unittest.main()

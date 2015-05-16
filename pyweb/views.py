@@ -13,6 +13,10 @@ def get_current_user():
 def set_current_user(user):
     current_user = user
 
+@app.route('/hello')
+def hello():
+    return 'Hello, World!'
+
 @app.route('/')
 @app.route('/index')
 def index():
