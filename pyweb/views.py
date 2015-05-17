@@ -3,6 +3,7 @@ from flask_login import LoginManager, UserMixin, current_user, login_user, logou
 from pyweb import app
 from forms.login_form import LoginForm
 from models.user import User
+from services.user_service import UserService
 
 def get_current_user():
     if (current_user.is_authenticated()):
@@ -35,13 +36,13 @@ def login():
 
     if get_current_user() is None:
         error = None
-        
-        users = [{'username':'valid_user', 'password':'valid_password'}]
 
+        users = UserService.load_all_users()
+        
         if request.method == 'POST':
-            if request.form['login'] not in [user['username'] for user in users]:
+            if request.form['login'] not in [user['id'] for user in users]:
                 error = 'Invalid username or password'
-            elif request.form['password'] != [user['password'] for user in users if user['username'] == request.form['login']][0]:
+            elif request.form['password'] != [user['password'] for user in users if user['id'] == request.form['login']][0]:
                 error = 'Invalid username or password'
             else:
                 user = User(request.form['login'])
