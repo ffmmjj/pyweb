@@ -4,6 +4,7 @@ from pyweb import app
 from forms.login_form import LoginForm
 from models.user import User
 from services.user_service import UserService
+from mongo_init import MongoInit
 
 def get_current_user():
     if (current_user.is_authenticated()):
@@ -37,7 +38,8 @@ def login():
     if get_current_user() is None:
         error = None
 
-        users = UserService.load_all_users()
+        db = MongoInit().initialize()
+        users = UserService(db).load_all_users()
         
         if request.method == 'POST':
             if request.form['login'] not in [user['id'] for user in users]:
