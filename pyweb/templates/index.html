@@ -1,4 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1 id='welcome-message'>Hi, {{ user.first_name }}!</h1>    
+	<div style="float:left;">
+    	<h3 id='welcome-message'>Caixa de Entrada</h1>   
+    </div>
+    <div class="nav navbar navbar-inverse" style="float:right;">
+    	<ul class="nav">
+    			<li><a href="#">Upload mbox file</a></li>
+    			<li><a href="#">Classify messages</a></li>
+    		</ul>   
+    </div>
+    <br style="clear:both;">
+    <div id="folder-list" style="float:left;height:100%;width:10%;">
+    	<ul class="custom-ul">
+    			<li id='message-topic'>Assunto 1</li>
+    			<li id='message-topic'>Assunto 2</li>
+    		</ul> 
+    </div>
+    <div id="messages-container" style="float:left;height:100%;width:90%">
+    	<div id="message-list" class="custom-div" style="height:200px;width:100%;overflow:scroll;">
+    		<ul class="custom-ul">
+    		<!-- 	<li id='message-item'>Message 1</li>
+    			<li id='message-item' class="alt-item">Message 2</li>
+    			<li id='message-item'>Message 1</li>
+    			<li id='message-item' class="alt-item">Message 2</li>
+    			<li id='message-item'>Message 1</li>
+    			<li id='message-item' class="alt-item">Message 2</li>
+    			<li id='message-item'>Message 1</li>
+    			<li id='message-item' class="alt-item">Message 2</li>
+    			<li id='message-item'>Message 1</li>
+    			<li id='message-item' class="alt-item">Message 2</li> -->
+    		</ul> 
+    	</div>
+    	<div id="message-content" style="height:calc(100% - 200px);" >
+    		<label>
+				ipsum
+    		</label>
+    	</div>
+    </div>
 {% endblock %}

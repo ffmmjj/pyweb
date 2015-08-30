@@ -18,7 +18,6 @@ def setup_debug_on_error(userdata):
 def before_all(context):
 	context.browser = webdriver.Chrome()
 	context.application_url = context.config.userdata.get("application_url")
-
 	setup_debug_on_error(context.config.userdata)
 
 def after_all(context):  

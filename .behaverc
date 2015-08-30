@@ -1,4 +1,6 @@
 [behave]
+stderr_capture=False
+stdout_capture=False
 format = plain
 show_skipped = 0
 
