@@ -45,6 +45,10 @@ def step_impl(context):
 
 @when('I navigate to the index page')
 def step_impl(context):
+    try:
+        get_element(context.browser, id='logout').click()
+    except:
+        pass
 	context.browser.get(context.application_url + 'index')
 
 @then('I see the login page')
@@ -77,7 +81,7 @@ def step_impl(context):
 @then('I am redirected to the index page')
 def step_impl(context):
     h = get_element(context.browser, id="welcome-message")
-    ok_(h.text.startswith("Hi"), 'Hello message %r has wrong text' % h.text)
+    ok_(h.text.startswith("Caixa"), 'Page title %r has wrong text' % h.text)
 
 @given('I am a invalid user')
 def step_impl(context):
