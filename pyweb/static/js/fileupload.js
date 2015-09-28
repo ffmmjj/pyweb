@@ -1,32 +1,4 @@
-<html>
-<style>
-  #progress_bar {
-    margin: 10px 0;
-    padding: 3px;
-    border: 1px solid #000;
-    font-size: 14px;
-    clear: both;
-    opacity: 0;
-    -moz-transition: opacity 1s linear;
-    -o-transition: opacity 1s linear;
-    -webkit-transition: opacity 1s linear;
-  }
-  #progress_bar.loading {
-    opacity: 1.0;
-  }
-  #progress_bar .percent {
-    background-color: #99ccff;
-    height: auto;
-    width: 0;
-  }
-</style>
 
-<input type="file" id="files" name="file" />
-<button onclick="abortRead();">Cancel read</button>
-<div id="progress_bar"><div class="percent">0%</div></div>
-<div id="file_content">...</div>
-
-<script>
   var reader;
   var progress = document.querySelector('.percent');
   var content = document.getElementById('file_content');
@@ -85,6 +57,7 @@
   }
 
   function handleFileSelect(evt) {
+    alert('handler');
     // Reset progress indicator on new file selection.
     progress.style.width = '0%';
     progress.textContent = '0%';
@@ -109,7 +82,3 @@
     // Read in the image file as a binary string.
     reader.readAsText(evt.target.files[0]);
   }
-
-  document.getElementById('files').addEventListener('change', handleFileSelect, false);
-</script>
-</html>
