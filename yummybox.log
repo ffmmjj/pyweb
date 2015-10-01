@@ -1,0 +1,27 @@
+valid_user
+valid_user
+None
+valid_user
+None
+valid_user
+valid_user
+None
+valid_user
+None
+valid_user
+{u'first_name': u'system', u'last_name': u'admin', u'_id': ObjectId('555926a660e67a64ac6053c5'), u'id': u'valid_user', u'password': u'valid_password', u'email': u'admin@yummybox.com'}
+valid_user
+{u'first_name': u'system', u'last_name': u'admin', u'_id': ObjectId('555926a660e67a64ac6053c5'), u'id': u'valid_user', u'password': u'valid_password', u'email': u'admin@yummybox.com'}
+valid_user
+{u'first_name': u'system', u'last_name': u'admin', u'_id': ObjectId('555926a660e67a64ac6053c5'), u'id': u'valid_user', u'password': u'valid_password', u'email': u'admin@yummybox.com'}
+valid_user
+valid_user
+valid_user
+valid_user
+valid_user
+valid_user
+valid_user
+valid_user
+valid_user
+invalid_user
+valid_userk

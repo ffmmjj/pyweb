@@ -1,23 +1,13 @@
-from ..models.user import User
+from ..models.message import Message
 
-class UserService():
+class MessageService():
 	db = None
 
 	def __init__(self, database):
 		self.db = database
 
-	def load_user_by_login(self, login):
-		collection = self.db.Users.find({'id': login})
-		if collection.count() > 0:
-			document = collection[0]
-			user = User(document['id'])
-			user.first_name = document['first_name']
-			user.last_name = document['last_name']
-			user.email = document['email']
-			user.password = document['password']
-			return user
-		else:
-			return User('')
+	def load__by_login(login):
+		return {'username':'valid_user', 'password':'valid_password'}
 	
 	def load_all_users(self):
 		users = [u for u in self.db.Users.find()]

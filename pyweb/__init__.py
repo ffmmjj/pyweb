@@ -3,6 +3,8 @@ from flask_login import LoginManager, UserMixin, current_user, login_user, logou
 from models.user import User
 from services.user_service import UserService
 from mongo_init import MongoInit
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
@@ -25,4 +27,10 @@ def init_login():
         else:
         	return None
 
+def init_logger():
+    handler = RotatingFileHandler('yummybox.log', maxBytes=10000, backupCount=1)
+    handler.setLevel(logging.INFO)
+    app.logger.addHandler(handler)
+
 init_login()
+init_logger()

@@ -5,6 +5,7 @@ from forms.login_form import LoginForm
 from models.user import User
 from services.user_service import UserService
 from mongo_init import MongoInit
+import logging
 
 def get_current_user():
     if (current_user.is_authenticated()):
@@ -38,16 +39,16 @@ def login():
     if get_current_user() is None:
         error = None
 
-        db = MongoInit().initialize()
-        users = UserService(db).load_all_users()
+        db = MongoInit().initialize()        
         
-        if request.method == 'POST':
-            if request.form['login'] not in [user['id'] for user in users]:
+        if request.method == 'POST':            
+            user = UserService(db).load_user_by_login(request.form['login'])
+            
+            if request.form['login'] != user.id:
                 error = 'Invalid username or password'
-            elif request.form['password'] != [user['password'] for user in users if user['id'] == request.form['login']][0]:
+            elif request.form['password'] != user.password:
                 error = 'Invalid username or password'
             else:
-                user = User(request.form['login'])
                 login_user(user)
                 set_current_user(user)
                 return redirect(url_for('index'))
