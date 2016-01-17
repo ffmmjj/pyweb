@@ -110,16 +110,16 @@
           var lines = fileContent.replace('\n','<br\>');
           content.innerHTML = '';
           updateContent(0, lines);  
-          pos = pos + chunkSize;
-          if (pos <= file.size) {                  
-            readChunk(pos, chunkSize, file);                  
-          }
+          pos = pos + chunkSize;          
           $.ajax({
               url: '/api/file',
               type: 'post',
               contentType: 'application/json',
               dataType: 'json',
-              success: function (data, status, xhr) {                              
+              success: function (data, status, xhr) {
+                if (pos <= file.size) {                  
+                  readChunk(pos, chunkSize, file);                  
+                }
               },
               error: function(xhr, status, error) { 
                 alert(status + ': ' + error + '\n' + xhr.responseText); 
@@ -160,7 +160,7 @@
     file = evt.files[0];
     fileId = newGuid();
     pos = 0;    
-    chunkSize = 1024 * 1024 * 4
+    chunkSize = 1024 * 1024;
     readChunk(pos, chunkSize, file);
   }
 
