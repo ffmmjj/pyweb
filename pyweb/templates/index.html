@@ -11,6 +11,7 @@
     		<li><a href="#">Classify messages</a></li>
     	</ul>   
     </div>
+    <div id="progress_bar_partial"><div class="percent_partial">0%</div></div>
     <div id="progress_bar"><div class="percent">0%</div></div>
     <div id="file_content">...</div>
     <br style="clear:both;">
@@ -48,7 +49,19 @@
 
   var reader;
   var progress = document.querySelector('.percent');
+  var progress_partial = document.querySelector('.percent_partial');
   var content = document.getElementById('file_content');
+  var file;
+  var pos;
+  var chunkSize;
+  var fileId;
+
+  function newGuid() {
+    function S4() {
+      return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
+    }
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+  }
 
   function abortRead() {
     reader.abort();
@@ -70,42 +83,67 @@
   }
 
   function updateProgress(evt) {
-    // evt is an ProgressEvent.
+    var fileContent = evt.target.result;
+    
     if (evt.lengthComputable) {
-      var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
-      // Increase the progress bar length.
-      if (percentLoaded < 100) {
+      var percentLoadedPartial = Math.round((evt.loaded / evt.total) * 100);
+      var percentLoaded = Math.round((pos / file.size) * 100);
+      
+      if (percentLoaded <= 100) {
         progress.style.width = percentLoaded + '%';
         progress.textContent = percentLoaded + '%';
+      }
+      if (percentLoadedPartial <= 100) {
+        progress_partial.style.width = percentLoadedPartial + '%';
+        progress_partial.textContent = percentLoadedPartial + '%';
       }
     }
   }
 
   function updateComplete(evt) {    
-    var fileContent = evt.target.result;
+    if (evt.target.readyState == FileReader.DONE) {
+      var fileContent = evt.target.result;
 
-    if (!fileContent) {
-        content.innerHTML = 'Erro de leitura!';
-    } else {
-        var lines = fileContent.split('\n');
-        content.innerHTML = '';
-        updateContent(0, lines);        
+      if (!fileContent) {
+          content.innerHTML = 'Envio finalizado!';          
+      } else {
+          var lines = fileContent.replace('\n','<br\>');
+          content.innerHTML = '';
+          updateContent(0, lines);  
+          pos = pos + chunkSize;
+          if (pos <= file.size) {                  
+            readChunk(pos, chunkSize, file);                  
+          }
+          $.ajax({
+              url: '/api/file',
+              type: 'post',
+              contentType: 'application/json',
+              dataType: 'json',
+              success: function (data, status, xhr) {                              
+              },
+              error: function(xhr, status, error) { 
+                alert(status + ': ' + error + '\n' + xhr.responseText); 
+              },
+              data: JSON.stringify({fileId: fileId, data : fileContent})
+          });   
+      }      
     }
   }
 
+  function encodeMessages(messages) {
+    return '{"data":"'+ messages +'"}';
+  }
+
   function updateContent(start, lines) {
-    var i;
-    for (i = start; i < start + 50 && i < lines.length; i++) {
-        content.innerHTML = i + ' - ' + lines[i] + '<br/>';
-    }
-    if (i < lines.length) {
-        setTimeout(function(){updateContent(i, lines);}, 50);
-    }
+    content.innerHTML = lines;    
   }
 
   function handleFileSelect(evt) {
     progress.style.width = '0%';
     progress.textContent = '0%';
+    
+    progress_partial.style.width = '0%';
+    progress_partial.textContent = '0%';
 
     reader = new FileReader();
     reader.onerror = errorHandler;
@@ -116,17 +154,23 @@
     };
     reader.onloadstart = function(e) {
       document.getElementById('progress_bar').className = 'loading';
-    };
-    reader.onload = function(e) {
-      // Ensure that the progress bar displays 100% at the end.
-      progress.style.width = '100%';
-      progress.textContent = '100%';
-      setTimeout("document.getElementById('progress_bar').className='';", 2000);
-    }    
+      document.getElementById('progress_bar_partial').className = 'loading';
+    };   
 
-    // Read in the image file as a binary string.
-    reader.readAsText(evt.files[0]);
+    file = evt.files[0];
+    fileId = newGuid();
+    pos = 0;    
+    chunkSize = 1024 * 1024 * 4
+    readChunk(pos, chunkSize, file);
   }
 
-    </script>
+  function readChunk() {
+    if (pos < file.size && pos + chunkSize > file.size) {
+      chunkSize = file.size - pos;
+    }
+    var blob = file.slice(pos, pos + chunkSize);      
+    reader.readAsText(blob);    
+  }
+
+  </script>
 {% endblock %}

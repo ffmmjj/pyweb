@@ -17,7 +17,7 @@ class UserService():
 			user.password = document['password']
 			return user
 		else:
-			return User('')
+			return None
 	
 	def load_all_users(self):
 		users = [u for u in self.db.Users.find()]
