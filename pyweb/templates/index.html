@@ -107,9 +107,6 @@
       if (!fileContent) {
           content.innerHTML = 'Envio finalizado!';          
       } else {
-          var lines = fileContent.replace('\n','<br\>');
-          content.innerHTML = '';
-          updateContent(0, lines);  
           pos = pos + chunkSize;          
           $.ajax({
               url: '/api/file',
@@ -132,10 +129,6 @@
 
   function encodeMessages(messages) {
     return '{"data":"'+ messages +'"}';
-  }
-
-  function updateContent(start, lines) {
-    content.innerHTML = lines;    
   }
 
   function handleFileSelect(evt) {

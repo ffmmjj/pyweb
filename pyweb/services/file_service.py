@@ -34,8 +34,8 @@ class FileService():
             json_data = fileChunk.to_json()
             self.db.FileChunks.replace_one({'_id': fileChunk._id}, json_data)
 
-    def processFileChunk(self, id, fileId, fileData, fileUser):
-        fileChunk = FileChunk(id, fileId, fileUser, fileData)
+    def processFileChunk(self, id, fileId, fileUser, chunkData, chunkPosition):
+        fileChunk = FileChunk(id, fileId, fileUser, fileData, chunkPosition)
 
         self.__save(fileChunk)
 

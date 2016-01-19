@@ -77,10 +77,10 @@ def create_file():
 
     db = MongoInit().initialize()
     
-    payload = { 'fileId': request.json['fileId'], 'data': request.json['data'], 'user': get_current_user().id }
+    payload = { 'fileId': request.json['fileId'], 'data': request.json['data'], 'position': request.json['position'], 'user': get_current_user().id }
 
     fileService = FileService(db)
     
-    file = fileService.processFileChunk(None, payload['fileId'], payload['data'], payload['user'])
+    file = fileService.processFileChunk(None, payload['fileId'], payload['user'], payload['data'], payload['position'])
     
-    return make_response(jsonify({'fileId': file._id, 'data': file.data}), 201)
+    return make_response(jsonify({'fileId': file._id, 'position': file.position}), 201)
