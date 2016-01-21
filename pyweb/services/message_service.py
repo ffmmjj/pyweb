@@ -5,8 +5,6 @@ import operator
 import unicodedata
 from collections import defaultdict
 from pattern import web
-import numpy as np
-from sklearn import svm
 import random as random
 
 class MessageService():
