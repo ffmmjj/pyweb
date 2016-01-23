@@ -40,7 +40,9 @@ class MessageService():
 		for chunk in fileChunks:
 			lines = chunk.data.splitlines()			
 			for line in lines:
-				if line.strip() == "":
+				if line.strip() == "" or (lines.index(line) == len(lines) - 1 and fileChunks.index(chunk) == len(fileChunks) - 1):
+					if line.strip() != "":
+						content += line
 					if processingContent:						
 						messageContent = self.parseContent(content)
 						message = Message(str(uuid.uuid1()), chunk.fileId, messageContent, "subject", "sender", "to", "user")
