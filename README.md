@@ -17,4 +17,4 @@ Running unit tests:
 
 The production url for YummyBox is:
 
-http://paiweb.herokuapp.com/
+http://mbox.herokuapp.com/
