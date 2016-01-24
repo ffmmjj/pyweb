@@ -46,7 +46,7 @@ def get_elements(driver, id=None, tag=None, text=None):
         if (tag):
             return driver.find_elements_by_tag_name(tag)
 
-@given('I am a valid user with messages')
+@given('I am a valid user with no messages')
 def step_impl(context):
     global username
     global password

@@ -1,5 +1,6 @@
 # -*- coding: iso-8859-15 -*-
 import unittest
+import base64
 from collections import defaultdict
 from pyweb.services.message_service import MessageService
 from pyweb.models.fileChunk import FileChunk
@@ -101,7 +102,9 @@ bCBhdHVhbCBtaV9hbmdlbF9lc3Blam9AaG90bWFpbC5jb208L2Rpdj4gICAgCiAgICA8L2Rpdj4K
 ICA8L2JvZHk+CjwvaHRtbD4K"""
         expected = """boa noite por favor eu quero participar de o exame nacional de revalidao de diplomas mdicos expedidos por instituies de educao superior estrangeiras  revalida 2014 mais no posso fazer minha inscrio por que no ano passado quis fazer minha inscrio pero foi tarde demais e o cadastro que fiz foi com um e-mail que perdi (perdi a conta)e no lembro a senha porfavor como posso fazer para-me cadastrar novamente com outro e-mail por favor me ajude eu quero muito mesmo participar da prova. eu peo sua ajuda e grata antecipadamente pela sua ajuda porfavor.<br />ou por favor me diga como eu posso falar com vocs.<br />meu e-mail atual mi_angel_espejo@hotmail.com"""
 
-        actual = self.messageService.parseContent(content)
+        contentDict = self.messageService.parseMessage(base64.b64decode(content))
+
+        actual = self.messageService.parseContent(contentDict)
         self.assertEqual(actual, expected)
 
     def test_should_parse_subject(self):
@@ -146,7 +149,9 @@ bCBhdHVhbCBtaV9hbmdlbF9lc3Blam9AaG90bWFpbC5jb208L2Rpdj4gICAgCiAgICA8L2Rpdj4K
 ICA8L2JvZHk+CjwvaHRtbD4K"""
         expected = """boa noite por favor eu quero participar de o exame nacional de revalidao de diplomas mdicos expedidos por instituies de educao superior estrangeiras  revalida 2014 mais no posso fazer minha inscrio por que no ano passado quis fazer minha inscrio pero foi tarde demais e o cadastro que fiz foi com um e-mail que perdi (perdi a conta)e no lembro a senha porfavor como posso fazer para-me cadastrar novamente com outro e-mail por favor me ajude eu quero muito mesmo participar da prova. eu peo sua ajuda e grata antecipadamente pela sua ajuda porfavor.<br />ou por favor me diga como eu posso falar com vocs.<br />meu e-mail atual mi_angel_espejo@hotmail.com"""
 
-        actual = self.messageService.parseContent(content)
+        contentDict = self.messageService.parseMessage(base64.b64decode(content))
+
+        actual = self.messageService.parseContent(contentDict)
         self.assertEqual(actual, expected)        
 
     def test_should_parse_file_chunks(self):

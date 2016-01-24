@@ -39,13 +39,17 @@ class MessageService():
 					if line.strip() != "":
 						content += line
 					if processingContent:
-						messageOriginalContent = self.parseOriginalContent(content)
-						messageContent = self.parseContent(content)
-						messageSubject = self.parseSubject(content)
-						messageSender = self.parseSender(content)
-						messageDate = self.parseDate(content)
-						message = Message(str(uuid.uuid1()), chunk.fileId, messageOriginalContent, messageContent, messageSubject, messageSender, messageDate, chunk.user)
-						messages.append(message)
+						try:
+							parsedMessage = self.parseMessage(base64.b64decode(content))
+							messageOriginalContent = self.parseOriginalContent(parsedMessage)
+							messageContent = self.parseContent(parsedMessage)
+							messageSubject = self.parseSubject(parsedMessage)
+							messageSender = self.parseSender(parsedMessage)
+							messageDate = self.parseDate(parsedMessage)
+							message = Message(str(uuid.uuid1()), chunk.fileId, messageOriginalContent, messageContent, messageSubject, messageSender, messageDate, chunk.user)
+							messages.append(message)
+						except Exception, e:
+							pass							
 
 					content = ""
 					processingContent = not processingContent
@@ -74,42 +78,17 @@ class MessageService():
 		return result
 
 	def parseOriginalContent(self, message):
-		result = ""
-		try:
-			result = self.parseMessage(base64.b64decode(message))[u'Mensagem:'].encode('ascii','ignore')
-		except:
-			pass
-		return result
+		return message[u'Mensagem:']
 
 	def parseContent(self, message):
-		result = ""
-		try:
-			result = self.parseMessage(base64.b64decode(message))[u'Mensagem:'].replace(',','').lower().strip().encode('ascii','ignore')
-		except:
-			pass
-		return result
+		return message[u'Mensagem:'].replace(',','').lower().strip().encode('ascii','ignore')
 
 	def parseSubject(self, message):
-		result = ""
-		try:
-			result = self.parseMessage(base64.b64decode(message))[u'Assunto:'].lower().strip().encode('ascii','ignore')
-		except:
-			pass
-		return result
+		return message[u'Assunto:']
 
 	def parseSender(self, message):
-		result = ""
-		try:
-			result = self.parseMessage(base64.b64decode(message))[u'E-mail do remetente:'].lower().strip().encode('ascii','ignore')
-		except:
-			pass
-		return result
+		return message[u'E-mail do remetente:'].lower().strip().encode('ascii','ignore')
 
 	def parseDate(self, message):
-		result = ""
-		try:
-			result = self.parseMessage(base64.b64decode(message))[u'data de envio:'].strip().encode('ascii','ignore')
-		except:
-			pass
-		return result
+		return message[u'data de envio:'].strip().encode('ascii','ignore')
 
