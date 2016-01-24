@@ -84,7 +84,10 @@ class MessageService():
 		return message[u'Mensagem:'].replace(',','').lower().strip().encode('ascii','ignore')
 
 	def parseSubject(self, message):
-		return message[u'Assunto:']
+		if message[u'Assunto:'].strip() == "":
+			return "(Sem assunto)"
+		else:
+			return message[u'Assunto:']
 
 	def parseSender(self, message):
 		return message[u'E-mail do remetente:'].lower().strip().encode('ascii','ignore')

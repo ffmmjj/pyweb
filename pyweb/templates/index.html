@@ -32,7 +32,7 @@
     		<ul class="custom-ul">
           {% if messages|count > 0 %}
             {% for message in messages %}
-              {% if messages.index(message) % 2 == 0 %}
+              {% if messages.index(message) % 2 == 0 %}                
                 <li id='message-item'>{{ message.subject }}</li>
               {% else %}
                 <li id='message-item' class="alt-item">{{ message.subject }}</li>
