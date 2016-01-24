@@ -4,10 +4,12 @@ from collections import defaultdict
 from pyweb.services.message_service import MessageService
 from pyweb.models.fileChunk import FileChunk
 from pyweb.models.message import Message
+from pyweb.fakes.fakeDB import FakeDB
 
 class MessageServiceTests(unittest.TestCase):
     def setUp(self):
-        self.messageService = MessageService(None)
+        db = FakeDB()
+        self.messageService = MessageService(db)
 
     def test_should_process_message(self):
         expected = defaultdict(str,{u'Respondida:': u'Sim', u'Mensagem:': u'Boa noite, por favor eu quero participar de O Exame Nacional de Revalida\xe7\xe3o de Diplomas M\xe9dicos Expedidos por Institui\xe7\xf5es de Educa\xe7\xe3o Superior Estrangeiras \u2013 REVALIDA 2014, mais n\xe3o posso fazer minha inscri\xe7\xe3o por que no ano passado quis fazer minha inscri\xe7\xe3o pero foi tarde demais e o cadastro que fiz foi com um e-mail que perdi (perdi a conta)e n\xe3o lembro a senha, PORFAVOR COMO POSSO FAZER PARA-ME CADASTRAR NOVAMENTE COM OUTRO E-MAIL, POR FAVOR ME AJUDE, EU QUERO MUITO MESMO PARTICIPAR DA PROVA. eu pe\xe7o sua ajuda e grata antecipadamente pela sua ajuda PORFAVOR.<br />Ou por favor me diga como eu posso falar com voc\xeas.<br />Meu e-mail atual mi_angel_espejo@hotmail.com', u'E-mail do remetente:': u'mi_angel_espejo@hotmail.com', u'Nome do remetente:': u'VIRGINIA CONDORI CHOQUE', u'data de envio:': u'24/06/2014 01:19:33', u'Assunto:': u'Eu quero participar de O Exame Nacional de Revalida\xe7\xe3o de Diplomas M\xe9dicos 2014', u'Mensagem Externa:': u'Sim', u'Tipo:': u'Outro'})
@@ -102,6 +104,51 @@ ICA8L2JvZHk+CjwvaHRtbD4K"""
         actual = self.messageService.parseContent(content)
         self.assertEqual(actual, expected)
 
+    def test_should_parse_subject(self):
+        content = """PGh0bWwgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHhtbDpsYW5nPSJwdC1i
+ciIKICAgICAgbGFuZz0icHQtYnIiPgoKICAKICA8aGVhZD4KICAgIDxtZXRhIGNvbnRlbnQ9InRl
+eHQvaHRtbDtjaGFyc2V0PXV0Zi04IiBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiPgogIDwvaGVh
+ZD4KCiAgPGJvZHk+CiAgICA8ZGl2IHN0eWxlPSJtYXJnaW46IDEwcHg7Ij4gICAgICAgICAgICAK
+ICAgICAgPGxhYmVsIHN0eWxlPSJmb250LXdlaWdodDogYm9sZDsiPk5vbWUgZG8gcmVtZXRlbnRl
+OjwvbGFiZWw+CiAgICAgIDxzcGFuPlZJUkdJTklBIENPTkRPUkkgQ0hPUVVFPC9zcGFuPiAgICAK
+ICAgIDwvZGl2PgogICAgPGRpdiBzdHlsZT0ibWFyZ2luOiAxMHB4OyI+ICAgICAgICAgICAgCiAg
+ICAgIDxsYWJlbCBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7Ij5FLW1haWwgZG8gcmVtZXRlbnRl
+OjwvbGFiZWw+CiAgICAgIDxzcGFuPm1pX2FuZ2VsX2VzcGVqb0Bob3RtYWlsLmNvbTwvc3Bhbj4g
+ICAgCiAgICA8L2Rpdj4KICAgIDxkaXYgc3R5bGU9Im1hcmdpbjogMTBweDsiPiAgICAgICAgICAg
+IAogICAgICA8bGFiZWwgc3R5bGU9ImZvbnQtd2VpZ2h0OiBib2xkOyI+QXNzdW50bzo8L2xhYmVs
+PgogICAgICA8c3Bhbj5FdSBxdWVybyBwYXJ0aWNpcGFyIGRlIE8gRXhhbWUgTmFjaW9uYWwgZGUg
+UmV2YWxpZGHDp8OjbyBkZSBEaXBsb21hcyBNw6lkaWNvcyAyMDE0PC9zcGFuPiAgICAKICAgIDwv
+ZGl2PgogICAgPGRpdiBzdHlsZT0ibWFyZ2luOiAxMHB4OyI+ICAgICAgICAgICAgCiAgICAgIDxs
+YWJlbCBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7Ij5UaXBvOjwvbGFiZWw+CiAgICAgIDxzcGFu
+Pk91dHJvPC9zcGFuPgogICAgPC9kaXY+ICAgICAKICAgIDxkaXYgc3R5bGU9Im1hcmdpbjogMTBw
+eDsiPiAgICAgICAgICAgIAogICAgICA8bGFiZWwgc3R5bGU9ImZvbnQtd2VpZ2h0OiBib2xkOyI+
+ZGF0YSBkZSBlbnZpbzo8L2xhYmVsPgogICAgICA8c3Bhbj4yNC8wNi8yMDE0IDAxOjE5OjMzPC9z
+cGFuPiAgICAKICAgIDwvZGl2PgogICAgPGRpdiBzdHlsZT0ibWFyZ2luOiAxMHB4OyI+ICAgICAg
+ICAgICAgCiAgICAgIDxsYWJlbCBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7Ij5SZXNwb25kaWRh
+OjwvbGFiZWw+CiAgICAgIDxzcGFuPlNpbTwvc3Bhbj4KICAgIDwvZGl2PgogICAgPGRpdiBzdHls
+ZT0ibWFyZ2luOiAxMHB4OyI+ICAgICAgICAgICAgCiAgICAgIDxsYWJlbCBzdHlsZT0iZm9udC13
+ZWlnaHQ6IGJvbGQ7Ij5NZW5zYWdlbSBFeHRlcm5hOjwvbGFiZWw+CiAgICAgIDxzcGFuPlNpbTwv
+c3Bhbj4KICAgIDwvZGl2PgogICAgPGRpdiBzdHlsZT0ibWFyZ2luOiAxMHB4OyI+ICAgICAgICAg
+ICAgCiAgICAgIDxsYWJlbCBzdHlsZT0iZm9udC13ZWlnaHQ6IGJvbGQ7Ij5NZW5zYWdlbTo8L2xh
+YmVsPjxiciAvPjxiciAvPgogICAgICA8ZGl2PkJvYSBub2l0ZSwgcG9yIGZhdm9yIGV1IHF1ZXJv
+IHBhcnRpY2lwYXIgZGUgTyBFeGFtZSBOYWNpb25hbCBkZSBSZXZhbGlkYcOnw6NvIGRlIERpcGxv
+bWFzIE3DqWRpY29zIEV4cGVkaWRvcyBwb3IgSW5zdGl0dWnDp8O1ZXMgZGUgRWR1Y2HDp8OjbyBT
+dXBlcmlvciBFc3RyYW5nZWlyYXMg4oCTIFJFVkFMSURBIDIwMTQsIG1haXMgbsOjbyBwb3NzbyBm
+YXplciBtaW5oYSBpbnNjcmnDp8OjbyBwb3IgcXVlIG5vIGFubyBwYXNzYWRvIHF1aXMgZmF6ZXIg
+bWluaGEgaW5zY3Jpw6fDo28gcGVybyBmb2kgdGFyZGUgZGVtYWlzIGUgbyBjYWRhc3RybyBxdWUg
+Zml6IGZvaSBjb20gdW0gZS1tYWlsIHF1ZSBwZXJkaSAocGVyZGkgYSBjb250YSllIG7Do28gbGVt
+YnJvIGEgc2VuaGEsIFBPUkZBVk9SIENPTU8gUE9TU08gRkFaRVIgUEFSQS1NRSBDQURBU1RSQVIg
+Tk9WQU1FTlRFIENPTSBPVVRSTyBFLU1BSUwsIFBPUiBGQVZPUiBNRSBBSlVERSwgRVUgUVVFUk8g
+TVVJVE8gTUVTTU8gUEFSVElDSVBBUiBEQSBQUk9WQS4gZXUgcGXDp28gc3VhIGFqdWRhIGUgZ3Jh
+dGEgYW50ZWNpcGFkYW1lbnRlIHBlbGEgc3VhIGFqdWRhIFBPUkZBVk9SLjxici8+T3UgcG9yIGZh
+dm9yIG1lIGRpZ2EgY29tbyBldSBwb3NzbyBmYWxhciBjb20gdm9jw6pzLjxici8+TWV1IGUtbWFp
+bCBhdHVhbCBtaV9hbmdlbF9lc3Blam9AaG90bWFpbC5jb208L2Rpdj4gICAgCiAgICA8L2Rpdj4K
+ICA8L2JvZHk+CjwvaHRtbD4K"""
+        expected = """boa noite por favor eu quero participar de o exame nacional de revalidao de diplomas mdicos expedidos por instituies de educao superior estrangeiras  revalida 2014 mais no posso fazer minha inscrio por que no ano passado quis fazer minha inscrio pero foi tarde demais e o cadastro que fiz foi com um e-mail que perdi (perdi a conta)e no lembro a senha porfavor como posso fazer para-me cadastrar novamente com outro e-mail por favor me ajude eu quero muito mesmo participar da prova. eu peo sua ajuda e grata antecipadamente pela sua ajuda porfavor.<br />ou por favor me diga como eu posso falar com vocs.<br />meu e-mail atual mi_angel_espejo@hotmail.com"""
+
+        actual = self.messageService.parseContent(content)
+        self.assertEqual(actual, expected)        
+
     def test_should_parse_file_chunks(self):
         firstChunkData = """From nobody Fri 02 13 21:48:52 2015
 Return-Path: <dcwravazzi@gmail.com>
@@ -176,9 +223,11 @@ Cg==
 """
         chunks = [FileChunk("02a3aa53-3220-48a1-81c0-c3f5f807b681", 1, "jp", thirdChunkData, 3),FileChunk("3ba192de-8139-4d66-9c89-e47be1274fc5", 1, "jp", firstChunkData, 1),FileChunk("22e625e2-9b0d-42b2-a91e-ab41c9bc1706", 1, "jp", secondChunkData, 2)]
 
+        messageOriginalContent = """bom dia trabalho na defesa civil de so jos do rio preto / sp e pesquisando sobre o sigap acessei o link http://sigap.inep.gov.br/sigap/<br />para me cadastrar. efetuado o cadastramento e tentando acessar o mesmo link recebi a mensagem de que no havia dados para acessar o sigap e tentei fazer o cancelamento do meu cadastro sem sucesso. como fao para cancelar meus dados?<br /><br />att"""
+
         messageContent = """bom dia trabalho na defesa civil de so jos do rio preto / sp e pesquisando sobre o sigap acessei o link http://sigap.inep.gov.br/sigap/<br />para me cadastrar. efetuado o cadastramento e tentando acessar o mesmo link recebi a mensagem de que no havia dados para acessar o sigap e tentei fazer o cancelamento do meu cadastro sem sucesso. como fao para cancelar meus dados?<br /><br />att"""
 
-        expected = [Message("b5d9422a-faf6-4534-b3ed-0d5265e8e9f8", 1, messageContent, "subject", "sender", "to", "user")]
+        expected = [Message("b5d9422a-faf6-4534-b3ed-0d5265e8e9f8", 1, messageOriginalContent, messageContent, "subject", "sender", "to", "user")]
 
         actual = self.messageService.parseFileChunks(chunks)
 

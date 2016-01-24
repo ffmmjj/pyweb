@@ -13,18 +13,13 @@ class MessageService():
 	def __init__(self, database):
 		self.db = database
 
-	def load_messages_by_login(self, login):
-		collection = self.db.Messages.find({'user': login})
-		if collection.count() > 0:
-			document = collection[0]
-			user = Message(document['id'])
-			user.first_name = document['first_name']
-			user.last_name = document['last_name']
-			user.email = document['email']
-			user.password = document['password']
-			return user
-		else:
-			return User('')
+	def getMessagesByUser(self, user, start, count):
+		messages = []
+		collection = self.db.Messages.find({'user': user}).skip(start).limit(count)
+		for document in collection:
+			message = Message(document['_id'], document['fileId'], document['content'], document['subject'], document['sender'], document['date'], document['user'])
+			messages.append(message)
+		return messages		
 
 	def create(self, message):
 		json_data = message.to_json()
@@ -43,9 +38,13 @@ class MessageService():
 				if line.strip() == "" or (lines.index(line) == len(lines) - 1 and fileChunks.index(chunk) == len(fileChunks) - 1):
 					if line.strip() != "":
 						content += line
-					if processingContent:						
+					if processingContent:
+						messageOriginalContent = self.parseOriginalContent(content)
 						messageContent = self.parseContent(content)
-						message = Message(str(uuid.uuid1()), chunk.fileId, messageContent, "subject", "sender", "to", "user")
+						messageSubject = self.parseSubject(content)
+						messageSender = self.parseSender(content)
+						messageDate = self.parseDate(content)
+						message = Message(str(uuid.uuid1()), chunk.fileId, messageOriginalContent, messageContent, messageSubject, messageSender, messageDate, chunk.user)
 						messages.append(message)
 
 					content = ""
@@ -53,6 +52,9 @@ class MessageService():
 				if processingContent:
 					content += line		
 
+		for message in messages:
+			self.create(message)
+			
 		return messages
 
 	def parseMessage(self, html):
@@ -71,10 +73,42 @@ class MessageService():
 
 		return result
 
+	def parseOriginalContent(self, message):
+		result = ""
+		try:
+			result = self.parseMessage(base64.b64decode(message))[u'Mensagem:'].encode('ascii','ignore')
+		except:
+			pass
+		return result
+
 	def parseContent(self, message):
 		result = ""
 		try:
 			result = self.parseMessage(base64.b64decode(message))[u'Mensagem:'].replace(',','').lower().strip().encode('ascii','ignore')
+		except:
+			pass
+		return result
+
+	def parseSubject(self, message):
+		result = ""
+		try:
+			result = self.parseMessage(base64.b64decode(message))[u'Assunto:'].lower().strip().encode('ascii','ignore')
+		except:
+			pass
+		return result
+
+	def parseSender(self, message):
+		result = ""
+		try:
+			result = self.parseMessage(base64.b64decode(message))[u'E-mail do remetente:'].lower().strip().encode('ascii','ignore')
+		except:
+			pass
+		return result
+
+	def parseDate(self, message):
+		result = ""
+		try:
+			result = self.parseMessage(base64.b64decode(message))[u'data de envio:'].strip().encode('ascii','ignore')
 		except:
 			pass
 		return result

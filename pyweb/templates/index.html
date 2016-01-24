@@ -6,39 +6,42 @@
     </div>
     <div class="nav navbar navbar-inverse" style="float:right;">
     	<ul class="nav">
-    		<li><a href="#">Upload mbox file</a></li>
-            <li><input type="file" id="files" name="file" onchange="handleFileSelect(this)" /></li>
-    		<li><a href="#">Classify messages</a></li>
+        <li><input type="file" id="files" name="file" style="margin-top:12px;" onchange="handleFileSelect(this)" /></li>
+    		<li><a href="#">Upload file</a></li>        
+    		<li><a href="#" onclick="handleProcessClick()">Process file</a></li>
     	</ul>   
     </div>
     <div id="progress_bar_partial"><div class="percent_partial">0%</div></div>
     <div id="progress_bar"><div class="percent">0%</div></div>
     <div id="file_content">...</div>
     <br style="clear:both;">
-    <div id="folder-list" style="float:left;height:100%;width:10%;">
+    <div id="folder-list" style="float:left;height:100%;width:20%;border:solid;border-width:1px;">
     	<ul class="custom-ul">
-    			<li id='message-topic'>Assunto 1</li>
-    			<li id='message-topic'>Assunto 2</li>
+          <li id='message-topic'>Assunto 1</li>
+          <li id='message-topic'>Assunto 2</li>
+          <li id='message-topic'>Assunto 3</li>
+          <li id='message-topic'>Assunto 4</li>
+          <li id='message-topic'>Assunto 5</li>
+          <li id='message-topic'>Assunto 6</li>
+          <li id='message-topic'>Assunto 7</li>
+          <li id='message-topic'>Assunto 8</li>
     		</ul> 
     </div>
-    <div id="messages-container" style="float:left;height:100%;width:90%">
-    	<div id="message-list" class="custom-div" style="height:200px;width:100%;overflow:scroll;">
+    <div id="messages-container" style="float:left;height:100%;width:80%;border:solid;border-width:1px;">
+    	<div id="message-list" class="custom-div" style="height:200px;width:100%;overflow:scroll;border:solid;border-width:1px;">
     		<ul class="custom-ul">
-    		<!-- 	<li id='message-item'>Message 1</li>
-    			<li id='message-item' class="alt-item">Message 2</li>
-    			<li id='message-item'>Message 1</li>
-    			<li id='message-item' class="alt-item">Message 2</li>
-    			<li id='message-item'>Message 1</li>
-    			<li id='message-item' class="alt-item">Message 2</li>
-    			<li id='message-item'>Message 1</li>
-    			<li id='message-item' class="alt-item">Message 2</li>
-    			<li id='message-item'>Message 1</li>
-    			<li id='message-item' class="alt-item">Message 2</li> -->
+          {% for message in messages %}
+            {% if messages.index(message) % 2 == 0 %}
+              <li id='message-item'>{{ message.subject }}</li>
+            {% else %}
+              <li id='message-item' class="alt-item">{{ message.subject }}</li>
+            {% endif %}
+          {% endfor %}
     		</ul> 
     	</div>
-    	<div id="message-content" style="height:calc(100% - 200px);" >
+    	<div id="message-content" style="height:calc(100% - 200px);border:solid;border-width:1px;" >
     		<label>
-				ipsum
+				{{ messages[0].originalContent }}
     		</label>
     	</div>
     </div>
@@ -121,7 +124,7 @@
               error: function(xhr, status, error) { 
                 alert(status + ': ' + error + '\n' + xhr.responseText); 
               },
-              data: JSON.stringify({fileId: fileId, data : fileContent})
+              data: JSON.stringify({fileId: fileId, data : fileContent, position: pos})
           });   
       }      
     }
@@ -163,6 +166,23 @@
     }
     var blob = file.slice(pos, pos + chunkSize);      
     reader.readAsText(blob);    
+  }
+
+  function handleProcessClick() {
+    $.ajax({
+        url: '/api/file/process',
+        type: 'post',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          messages = JSON.parse(data);
+          alert(messages.length + ' messages encoutered!');
+        },
+        error: function(xhr, status, error) { 
+          alert(status + ': ' + error + '\n' + xhr.responseText); 
+        },
+        data: JSON.stringify({fileId: fileId})
+    });   
   }
 
   </script>

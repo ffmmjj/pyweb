@@ -16,12 +16,13 @@ class FileService():
         else:
             return User('')
 
-    def __retrieve(self, id):
-        collection = self.db.Files.find({'_id': id})
+    def getChunksByFileId(self, fileId):
+        collection = self.db.FileChunks.find({'fileId': fileId})
         if collection.count() > 0:
-            document = collection[0]
-            fileChunk = FileChunk(document['_id'], document['fileId'], document['user'], document['data'])
-            return fileChunk
+            result = []
+            for document in collection:
+                result.append(FileChunk(document['_id'], document['fileId'], document['user'], document['data'], document['position']))
+            return result
         else:
             return None
 
@@ -35,7 +36,7 @@ class FileService():
             self.db.FileChunks.replace_one({'_id': fileChunk._id}, json_data)
 
     def processFileChunk(self, id, fileId, fileUser, chunkData, chunkPosition):
-        fileChunk = FileChunk(id, fileId, fileUser, fileData, chunkPosition)
+        fileChunk = FileChunk(id, fileId, fileUser, chunkData, chunkPosition)
 
         self.__save(fileChunk)
 

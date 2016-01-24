@@ -28,13 +28,17 @@ def hello():
 @app.route('/')
 @app.route('/index')
 def index():
-    user = get_current_user()
+    user = get_current_user()    
     if user == None:
         return redirect('/login',302)
     else:
+        db = MongoInit().initialize()
+        messageService = MessageService(db)
+        messages = messageService.getMessagesByUser(user.id, 0, 50)
         return render_template("index.html",
                                title='Home',
-                               user=user)
+                               user=user,
+                               messages=messages)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -84,3 +88,34 @@ def create_file():
     file = fileService.processFileChunk(None, payload['fileId'], payload['user'], payload['data'], payload['position'])
     
     return make_response(jsonify({'fileId': file._id, 'position': file.position}), 201)
+
+@app.route('/api/file/process', methods=['POST'])
+def process_file():
+    if not request.json or not request.json['fileId']:
+        requestData = request.json or str(request.form) or request.data
+        return make_response('Invalid content: ' + requestData, 400)
+
+    db = MongoInit().initialize()
+
+    payload = { 'fileId': request.json['fileId'], 'user': get_current_user().id }
+
+    fileService = FileService(db)
+    messageService = MessageService(db)
+    
+    chunks = fileService.getChunksByFileId(payload['fileId'])
+
+    messages = []
+    if all(c.user == payload['user'] for c in chunks):
+        messages = messageService.parseFileChunks(chunks)
+
+    topMessages = []
+
+    for message in messages[:50]:
+        topMessages.append({'subject': message.subject, 'sender': message.sender, 'content': message.content, 'date': message.date})
+
+    result = {'fileId': payload['fileId'], 'messages': topMessages}
+
+    return make_response(jsonify(result))
+
+
+
