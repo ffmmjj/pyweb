@@ -17,7 +17,7 @@ class MessageService():
 		messages = []
 		collection = self.db.Messages.find({'user': user}).skip(start).limit(count)
 		for document in collection:
-			message = Message(document['_id'], document['fileId'], document['content'], document['subject'], document['sender'], document['date'], document['user'])
+			message = Message(document['_id'], document['fileId'], document['originalContent'], document['content'], document['subject'], document['sender'], document['date'], document['user'])
 			messages.append(message)
 		return messages		
 

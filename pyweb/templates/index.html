@@ -41,7 +41,9 @@
     	</div>
     	<div id="message-content" style="height:calc(100% - 200px);border:solid;border-width:1px;" >
     		<label>
-				{{ messages[0].originalContent }}
+        {% if messages|count > 0 %}
+				  {{ messages[0].originalContent }}
+        {% endif %}
     		</label>
     	</div>
     </div>
