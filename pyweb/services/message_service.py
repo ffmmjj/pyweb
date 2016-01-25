@@ -13,11 +13,27 @@ class MessageService():
 	def __init__(self, database):
 		self.db = database
 
-	def getMessagesByUser(self, user, start, count):
+	def getMessageById(self, id):
+		collection = self.db.Messages.find({'_id': id})
+		if collection.count() > 0:
+			document = collection[0]
+			return Message(document['_id'], document['fileId'], document['originalContent'], document['content'].encode('ascii','ignore'), document['subject'], document['sender'], document['date'], document['user'])
+		else:
+			return None
+
+	def getMessagesByUser(self, user):
+		messages = []
+		collection = self.db.Messages.find({'user': user})
+		for document in collection:
+			message = Message(document['_id'], document['fileId'], document['originalContent'], document['content'].encode('ascii','ignore'), document['subject'], document['sender'], document['date'], document['user'])
+			messages.append(message)
+		return messages		
+
+	def getMessagesByUserByPage(self, user, start, count):
 		messages = []
 		collection = self.db.Messages.find({'user': user}).skip(start).limit(count)
 		for document in collection:
-			message = Message(document['_id'], document['fileId'], document['originalContent'], document['content'], document['subject'], document['sender'], document['date'], document['user'])
+			message = Message(document['_id'], document['fileId'], document['originalContent'], document['content'].encode('ascii','ignore'), document['subject'], document['sender'], document['date'], document['user'])
 			messages.append(message)
 		return messages		
 
@@ -85,9 +101,9 @@ class MessageService():
 
 	def parseSubject(self, message):
 		if message[u'Assunto:'].strip() == "":
-			return "(Sem assunto)"
+			return "(Sem assunto)".encode('ascii','ignore')
 		else:
-			return message[u'Assunto:']
+			return message[u'Assunto:'].encode('ascii','ignore')
 
 	def parseSender(self, message):
 		return message[u'E-mail do remetente:'].lower().strip().encode('ascii','ignore')

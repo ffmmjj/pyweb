@@ -20,11 +20,28 @@ h3 {
 	padding-left: 5px; 
 }
 
+.item {
+	background-color: #aaccdd;
+}
+
+.item:hover {
+    background-color: #aabbcc;
+}
+
+.selected {
+	background-color: #ffffff;
+}
+
 .alt-item {
 	border-width: 1px 0px 0px 0px;
 	border-style: solid;
 	background-color: #aaaaaa;
 }
+
+.alt-item:hover {
+    background-color: #aabbcc;
+}
+
 
 #progress_bar {
 	margin: 10px 0;

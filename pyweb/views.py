@@ -8,6 +8,7 @@ from models.fileChunk import FileChunk
 from services.user_service import UserService
 from services.message_service import MessageService
 from services.file_service import FileService
+from services.nlp_service import NLPService
 from mongo_init import MongoInit
 import logging
 
@@ -34,7 +35,7 @@ def index():
     else:
         db = MongoInit().initialize()
         messageService = MessageService(db)
-        messages = messageService.getMessagesByUser(user.id, 0, 50)
+        messages = messageService.getMessagesByUserByPage(user.id, 0, 50)
         return render_template("index.html",
                                title='Home',
                                user=user,
@@ -117,5 +118,33 @@ def process_file():
 
     return make_response(jsonify(result))
 
+@app.route('/api/messages/<id>', methods=['GET'])
+def get_message(id):
+    db = MongoInit().initialize()
+    
+    messageService = MessageService(db)
+    
+    message = messageService.getMessageById(id)
+    
+    result = {'subject': message.subject, 'sender': message.sender, 'content': message.content, 'date': message.date}
+    
+    return make_response(jsonify(result), 200)
 
+@app.route('/api/messages/clusters/<userId>', methods=['GET'])
+def get_clusters(userId):
+    db = MongoInit().initialize()
+    messageService = MessageService(db)
+    messages = messageService.getMessagesByUser(userId)
 
+    nlpService = NLPService()
+    clusters = nlpService.processMessages(messages)
+
+    result = []
+
+    for key, values in clusters.iteritems():
+        clusterId = int(key)
+        clusteredMessages = [{'subject': v.subject, 'sender': v.sender, 'content': v.originalContent, 'date': v.date} for v in values[:10]]
+        cluster = {'clusterId': clusterId, 'messages': clusteredMessages}
+        result.append(cluster)
+    
+    return make_response(jsonify({'clusters':result}), 200)
