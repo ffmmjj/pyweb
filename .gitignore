@@ -3,3 +3,4 @@ flask/*
 *.output
 .DS_Store
 *.mbox
+notebooks/.ipynb_checkpoints/*
